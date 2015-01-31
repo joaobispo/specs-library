@@ -100,7 +100,7 @@ public class IoUtils {
 	 * resource.
 	 * 
 	 * @param resourceName
-	 * @return
+	 * @return a string with the contents of the resource
 	 */
 	public static String getResource(String resourceName) {
 		try (InputStream inputStream = IoUtils.resourceToStream(resourceName)) {
