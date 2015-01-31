@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.specs.library;
+package pt.up.fe.specs.library;
 
 import java.text.NumberFormat;
 import java.util.regex.Matcher;

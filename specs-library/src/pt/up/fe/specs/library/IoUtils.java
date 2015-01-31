@@ -11,7 +11,7 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package org.specs.library;
+package pt.up.fe.specs.library;
 
 import java.io.BufferedReader;
 import java.io.File;

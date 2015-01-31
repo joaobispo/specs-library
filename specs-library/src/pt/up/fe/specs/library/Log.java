@@ -1,4 +1,4 @@
-package org.specs.library;
+package pt.up.fe.specs.library;
 
 import java.util.logging.Logger;
 
