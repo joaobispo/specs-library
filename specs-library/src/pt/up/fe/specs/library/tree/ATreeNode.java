@@ -13,14 +13,11 @@
 
 package pt.up.fe.specs.library.tree;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-
-import pt.up.fe.specs.library.Log;
 
 /**
  * @author Joao Bispo
@@ -59,30 +56,12 @@ public abstract class ATreeNode<K extends ATreeNode<K>> implements TreeNode<K> {
 	}
 
 	/**
+	 * This method is to be used for the ListIterator.
 	 * 
 	 * @return a mutable view of the children
 	 */
 	List<K> getChildrenMutable() {
 		return children;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.suikasoft.SharedLibrary.TreeToken.TreeToken#setChildren(java.util.Collection)
-	 */
-	@Override
-	public void setChildren(Collection<K> children) {
-		// Remove previous children in this node
-
-		int numChildren = this.numChildren();
-		for (int i = 0; i < numChildren; i++) {
-			this.removeChild(0);
-		}
-
-		// Add new children
-		for (K child : children) {
-			addChild(child);
-		}
-
 	}
 
 	/* (non-Javadoc)
@@ -127,43 +106,6 @@ public abstract class ATreeNode<K extends ATreeNode<K>> implements TreeNode<K> {
 	}
 
 	/**
-	 * Fails a test in matlabirtransforms when used in NodeInsertUtils, could
-	 * not understand why
-	 */
-	/* (non-Javadoc)
-	 * @see org.suikasoft.SharedLibrary.TreeToken.TreeToken#setChild(int, K)
-	 */
-	/*
-	    public K setChild(K oldChild, K newChild) {
-		K sanitizedToken = TreeNodeUtils.sanitizeNode(newChild);
-		setAsParentOf(sanitizedToken);
-
-		if (!hasChildren()) {
-		    throw new RuntimeException("Token does not have children, cannot set a child.");
-		}
-
-		ListIterator<K> iterator = getChildrenIterator();
-		// Iterate until it finds the child
-		boolean foundChild = false;
-		while (iterator.hasNext()) {
-
-		    // If not the child, continue
-		    if (iterator.next() != oldChild) {
-			continue;
-		    }
-
-		    // Found the child, replace it
-		    iterator.set(newChild);
-		    foundChild = true;
-		}
-
-		// If no child found, throw exception
-		Preconditions.checkArgument(foundChild, "Could not find given child.");
-
-		return oldChild;
-	    }
-	*/
-	/**
 	 * Sets the parent of the given node to the current node. If the given node
 	 * already has a parent, throws an exception.
 	 * 
@@ -194,18 +136,12 @@ public abstract class ATreeNode<K extends ATreeNode<K>> implements TreeNode<K> {
 		K sanitizedChild = TreeNodeUtils.sanitizeNode(child);
 		setAsParentOf(sanitizedChild);
 
-		/*
-		if (children == null) {
-		    children = FactoryUtils.newLinkedList();
-		    // children = FactoryUtils.newArrayList();
-		}
-		*/
-
 		boolean changed = children.add(sanitizedChild);
 
 		return changed;
 	}
 
+	/*
 	@Override
 	public boolean addChildren(List<K> children) {
 		// If the same list (reference) create a copy, to avoid problems when
@@ -223,6 +159,7 @@ public abstract class ATreeNode<K extends ATreeNode<K>> implements TreeNode<K> {
 
 		return changed;
 	}
+	*/
 
 	/* (non-Javadoc)
 	 * @see org.suikasoft.SharedLibrary.TreeToken.TreeToken#addChild(int, K)
@@ -270,7 +207,7 @@ public abstract class ATreeNode<K extends ATreeNode<K>> implements TreeNode<K> {
 					+ "' still has children after copyPrivate(), check implementation");
 		}
 
-		for (K child : this.getChildren()) {
+		for (K child : getChildren()) {
 			// Copy children of token
 			K newChildToken = child.copy();
 
@@ -281,19 +218,6 @@ public abstract class ATreeNode<K extends ATreeNode<K>> implements TreeNode<K> {
 	}
 
 	/**
-	 * Returns an empty instance of the token (all values can be initialized to
-	 * null).
-	 * 
-	 * 
-	 * 
-	 * @param token
-	 * @return
-	 * @deprecated Replace with copy(). However, copy must be made abstract
-	 *             first
-	 */
-	// protected abstract K newEmptyInstance();
-
-	/**
 	 * Returns a reference to the object that implements this class.
 	 * 
 	 * <p>
@@ -301,7 +225,6 @@ public abstract class ATreeNode<K extends ATreeNode<K>> implements TreeNode<K> {
 	 * 
 	 * @return
 	 */
-	// protected abstract K getThis();
 	protected abstract K getThis();
 
 	/**
@@ -381,23 +304,9 @@ public abstract class ATreeNode<K extends ATreeNode<K>> implements TreeNode<K> {
 	 * 
 	 * @return
 	 */
+	@Override
 	public String toNodeString() {
 		return getThis().getClass().getSimpleName();
-	}
-
-	private String toString(K token, String prefix) {
-		StringBuilder builder = new StringBuilder();
-
-		builder.append(prefix).append(token.toNodeString());
-		builder.append("\n");
-
-		if (token.hasChildren()) {
-			for (K child : token.getChildren()) {
-				builder.append(toString(child, prefix + "  "));
-			}
-		}
-
-		return builder.toString();
 	}
 
 	/**
@@ -408,32 +317,9 @@ public abstract class ATreeNode<K extends ATreeNode<K>> implements TreeNode<K> {
 	 * @return a ListIterator over the children of the node. The iterator
 	 *         supports methods that modify the node (set, remove, insert...)
 	 */
+	@Override
 	public ListIterator<K> getChildrenIterator() {
 		return new ChildrenIterator<>(this);
-	}
-
-	/**
-	 * 
-	 * @param child
-	 * @return the index of the given child, or -1 if no child was found
-	 */
-	public int indexOfChild(K child) {
-		int index = 0;
-
-		ListIterator<K> iterator = getChildrenIterator();
-		// Iterate until it finds the same object
-		while (iterator.hasNext()) {
-			// If child is the same object, return index
-			if (iterator.next() == child) {
-				return index;
-			}
-
-			// Otherwise, increment index and try again
-			index++;
-		}
-
-		// Could not find the child
-		return -1;
 	}
 
 }

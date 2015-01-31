@@ -16,6 +16,7 @@ package pt.up.fe.specs.library.tree;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Stream;
 
 public interface TreeNode<K extends TreeNode<K>> {
@@ -80,10 +81,24 @@ public interface TreeNode<K extends TreeNode<K>> {
 	List<K> getChildren();
 
 	/**
+	 * 
 	 * @param children
 	 *            the children to set
 	 */
-	void setChildren(Collection<K> children);
+	default void setChildren(Collection<K> children) {
+		// Remove previous children in this node
+
+		int numChildren = this.numChildren();
+		for (int i = 0; i < numChildren; i++) {
+			this.removeChild(0);
+		}
+
+		// Add new children
+		for (K child : children) {
+			addChild(child);
+		}
+
+	}
 
 	/**
 	 * @return
@@ -135,6 +150,7 @@ public interface TreeNode<K extends TreeNode<K>> {
 	void addChild(int index, K child);
 
 	default boolean addChildren(List<K> children) {
+
 		boolean changed = false;
 		for (K child : children) {
 			addChild(child);
@@ -207,78 +223,59 @@ public interface TreeNode<K extends TreeNode<K>> {
 	}
 
 	/**
+	 * A string representation of the node.
 	 * 
-	 * @param index1
-	 * @param index2
-	 * @param indexes
-	 * @return the child after travelling the given indexes
-	 */
-	/*
-	default <T extends K> K getChild(List<Class<T>> nodeClasses, int index1, int index2, int... indexes) {
-	K currentChild = getChild(nodeClasses.get(0), index1);
-	currentChild = currentChild.getChild(nodeClasses.get(1), index2);
-	for (int i = 0; i < indexes.length; i++) {
-	    currentChild = currentChild.getChild(nodeClasses.get(i + 2), indexes[i]);
-	}
-
-	return currentChild;
-	}
-	*/
-	/**
-	 * TODO: Move to AbstractClass, include parent
+	 * <p>
+	 * As default, returns the name of the class.
 	 * 
-	 * @param node
 	 * @return
 	 */
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	/*
-	static <E extends Enum<E>, K extends TreeNode<E, K>> int hashCodeHelper(TreeNode<E, K> node) {
-	final int prime = 31;
-	int result = 1;
-	result = prime * result + ((node.getChildren() == null) ? 0 : node.getChildren().hashCode());
-	result = prime * result + ((node.getContent() == null) ? 0 : node.getContent().hashCode());
-	result = prime * result + ((node.getType() == null) ? 0 : node.getType().hashCode());
-	return result;
+	String toNodeString();
+
+	default String toString(K token, String prefix) {
+		StringBuilder builder = new StringBuilder();
+
+		builder.append(prefix).append(token.toNodeString());
+		builder.append("\n");
+
+		if (token.hasChildren()) {
+			for (K child : token.getChildren()) {
+				builder.append(toString(child, prefix + "  "));
+			}
+		}
+
+		return builder.toString();
 	}
-	*/
 
 	/**
-	 * TODO: Move to AbstractClass, include parent
 	 * 
-	 * @param node
-	 * @param obj
-	 * @return
+	 * @return a ListIterator over the children of the node. The iterator
+	 *         supports methods that modify the node (set, remove, insert...)
 	 */
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	ListIterator<K> getChildrenIterator();
+
+	/**
+	 * 
+	 * @param child
+	 * @return the index of the given child, or -1 if no child was found
 	 */
-	/*
-	static <E extends Enum<E>, K extends TreeNode<E, K>> boolean equalsHelper(TreeNode<E, K> node, Object obj) {
-	if (node == obj)
-	    return true;
-	if (obj == null)
-	    return false;
-	if (node.getClass() != obj.getClass())
-	    return false;
-	Token<?, ?> other = (Token<?, ?>) obj;
-	if (node.getChildren() == null) {
-	    if (other.children != null)
-		return false;
-	} else if (!node.getChildren().equals(other.children))
-	    return false;
-	if (node.getContent() == null) {
-	    if (other.getContent() != null)
-		return false;
-	} else if (!node.getContent().equals(other.getContent()))
-	    return false;
-	if (node.getType() == null) {
-	    if (other.getType() != null)
-		return false;
-	} else if (!node.getType().equals(other.getType()))
-	    return false;
-	return true;
+	default int indexOfChild(K child) {
+		int index = 0;
+
+		ListIterator<K> iterator = getChildrenIterator();
+		// Iterate until it finds the same object
+		while (iterator.hasNext()) {
+			// If child is the same object, return index
+			if (iterator.next() == child) {
+				return index;
+			}
+
+			// Otherwise, increment index and try again
+			index++;
+		}
+
+		// Could not find the child
+		return -1;
 	}
-	*/
+
 }
