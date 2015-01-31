@@ -11,23 +11,31 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package org.specs.library.PushingQueue;
+package pt.up.fe.specs.library.pushingqueue;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
- * "Pushing Queue" implementations with a LinkedList.
+ * "Pushing Queue" of fixed size.
+ *
+ * <p>
+ * Elements can only be added at the head of the queue. Every time an element is
+ * added, every other elements gets "pushed" (its index increments by one). If
+ * an element is added when the queue is full, the last element in the queue
+ * gets dropped.
+ *
+ * TODO: remove capacity, replace with size
  * 
  * 
  * @author Joao Bispo
  */
-public class LinkedPushingQueue<T> implements PushingQueue<T> {
+public class ArrayPushingQueue<T> implements PushingQueue<T> {
 
 	/**
 	 * INSTANCE VARIABLES
 	 */
-	private LinkedList<T> queue;
+	private ArrayList<T> queue;
 
 	private int maxSize;
 
@@ -37,9 +45,10 @@ public class LinkedPushingQueue<T> implements PushingQueue<T> {
 	 * @param capacity
 	 *            the size of the queue
 	 */
-	public LinkedPushingQueue(int capacity) {
+	public ArrayPushingQueue(int capacity) {
 		this.maxSize = capacity;
-		queue = new LinkedList<>();
+		queue = new ArrayList<>(capacity);
+
 	}
 
 	/**
@@ -52,13 +61,12 @@ public class LinkedPushingQueue<T> implements PushingQueue<T> {
 	@Override
 	public void insertElement(T element) {
 		// Insert element at the head
+		// queue.addFirst(element);
 		queue.add(0, element);
 
 		// If size exceed capacity, remove last element
 		while (queue.size() > maxSize) {
-			Iterator<T> iterator = queue.descendingIterator();
-			iterator.next();
-			iterator.remove();
+			queue.remove(queue.size() - 1);
 		}
 
 	}

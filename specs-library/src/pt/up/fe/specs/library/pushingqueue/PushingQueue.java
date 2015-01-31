@@ -11,9 +11,8 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package org.specs.library.PushingQueue;
+package pt.up.fe.specs.library.pushingqueue;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -26,30 +25,10 @@ import java.util.Iterator;
  * gets dropped.
  *
  * TODO: remove capacity, replace with size
- * 
- * 
+ *
  * @author Joao Bispo
  */
-public class ArrayPushingQueue<T> implements PushingQueue<T> {
-
-	/**
-	 * INSTANCE VARIABLES
-	 */
-	private ArrayList<T> queue;
-
-	private int maxSize;
-
-	/**
-	 * Creates a PushingQueue with the specified size.
-	 *
-	 * @param capacity
-	 *            the size of the queue
-	 */
-	public ArrayPushingQueue(int capacity) {
-		this.maxSize = capacity;
-		queue = new ArrayList<>(capacity);
-
-	}
+public interface PushingQueue<T> {
 
 	/**
 	 * Inserts an element at the head of the queue, pushing all other elements
@@ -58,18 +37,7 @@ public class ArrayPushingQueue<T> implements PushingQueue<T> {
 	 * @param element
 	 *            an element to insert in the queue
 	 */
-	@Override
-	public void insertElement(T element) {
-		// Insert element at the head
-		// queue.addFirst(element);
-		queue.add(0, element);
-
-		// If size exceed capacity, remove last element
-		while (queue.size() > maxSize) {
-			queue.remove(queue.size() - 1);
-		}
-
-	}
+	void insertElement(T element);
 
 	/**
 	 * Returns the element at the specified position in this queue.
@@ -78,56 +46,21 @@ public class ArrayPushingQueue<T> implements PushingQueue<T> {
 	 *            index of the element to return
 	 * @return the element at the specified position in this queue
 	 */
-	@Override
-	public T getElement(int index) {
-		if (index >= queue.size()) {
-			return null;
-		}
-
-		return queue.get(index);
-	}
+	T getElement(int index);
 
 	/**
 	 * Returns the capacity of the queue.
 	 *
 	 * @return the capacity of the queue
 	 */
-	@Override
-	public int size() {
-		return maxSize;
-	}
+	public int size();
 
 	/**
 	 * 
 	 * @return the number of inserted elements
 	 */
-	@Override
-	public int currentSize() {
-		return queue.size();
-	}
+	int currentSize();
 
-	@Override
-	public Iterator<T> iterator() {
-		return queue.iterator();
-	}
-
-	@Override
-	public String toString() {
-		if (maxSize == 0) {
-			return "[]";
-		}
-
-		StringBuilder builder = new StringBuilder();
-
-		builder.append("[").append(getElement(0));
-
-		for (int i = 1; i < maxSize; i++) {
-			builder.append(", ").append(getElement(i));
-		}
-		builder.append("]");
-
-		return builder.toString();
-
-	}
+	Iterator<T> iterator();
 
 }

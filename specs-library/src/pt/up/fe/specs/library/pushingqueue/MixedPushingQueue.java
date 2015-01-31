@@ -11,7 +11,7 @@
  * specific language governing permissions and limitations under the License. under the License.
  */
 
-package org.specs.library.PushingQueue;
+package pt.up.fe.specs.library.pushingqueue;
 
 import java.util.Iterator;
 

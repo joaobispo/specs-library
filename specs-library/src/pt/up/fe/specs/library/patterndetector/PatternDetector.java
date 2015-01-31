@@ -10,14 +10,14 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License. under the License.
  */
-package org.specs.library.PatternDetector;
+package pt.up.fe.specs.library.patterndetector;
 
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Iterator;
 
-import org.specs.library.PushingQueue.MixedPushingQueue;
-import org.specs.library.PushingQueue.PushingQueue;
+import pt.up.fe.specs.library.pushingqueue.MixedPushingQueue;
+import pt.up.fe.specs.library.pushingqueue.PushingQueue;
 
 /**
  * Looks for patterns in integer values.
