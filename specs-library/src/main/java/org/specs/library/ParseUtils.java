@@ -18,6 +18,9 @@
 package org.specs.library;
 
 import java.text.NumberFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class ParseUtils {
 
@@ -33,7 +36,6 @@ public class ParseUtils {
 		doubleFormat.setMaximumFractionDigits(2);
 
 		// Check millis
-		// long millis = nanos / 1000000;
 		double millis = (double) nanos / 1000000;
 
 		if (millis < 1000) {
@@ -48,6 +50,25 @@ public class ParseUtils {
 		double mins = secs / 60.0;
 
 		return doubleFormat.format(mins) + " minutes";
+	}
+
+	public static String getRegexGroup(String contents, Pattern pattern, int capturingGroupIndex) {
+
+		String tester = null;
+
+		try {
+
+			Matcher regexMatcher = pattern.matcher(contents);
+			if (regexMatcher.find()) {
+
+				tester = regexMatcher.group(capturingGroupIndex);
+			}
+		} catch (PatternSyntaxException ex) {
+
+			Log.warn(ex.getMessage());
+		}
+
+		return tester;
 	}
 
 }
