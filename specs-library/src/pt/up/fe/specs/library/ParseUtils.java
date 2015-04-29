@@ -18,6 +18,7 @@
 package pt.up.fe.specs.library;
 
 import java.text.NumberFormat;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -71,4 +72,33 @@ public class ParseUtils {
 		return tester;
 	}
 
+	/**
+	 * Tries to parse a String into a integer. If an exception happens, returns
+	 * an empty Optional.
+	 * 
+	 * @param integer
+	 *            a String representing an integer.
+	 * @return an Optional with the integer represented by the string, or an
+	 *         empty Optional if it couldn't be parsed.
+	 */
+	public static Optional<Integer> parseInteger(String integer) {
+
+		Integer intResult = null;
+		try {
+			intResult = Integer.parseInt(integer);
+		} catch (NumberFormatException e) {
+			return Optional.empty();
+		}
+
+		return Optional.of(intResult);
+	}
+
+	/**
+	 * 
+	 * @param string
+	 * @return true if string has length zero, false otherwise
+	 */
+	public static boolean isEmpty(String string) {
+		return string.length() == 0;
+	}
 }
